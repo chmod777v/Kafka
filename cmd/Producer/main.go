@@ -2,6 +2,7 @@ package main
 
 import (
 	"encoding/json"
+	"fmt"
 	"log/slog"
 	"net/http"
 )
@@ -23,8 +24,9 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 func main() {
 	http.HandleFunc("/", Handler)
+	fmt.Println("server start: '0.0.0.0:8080'")
 
-	if err := http.ListenAndServe("localhost:8080", nil); err != nil {
+	if err := http.ListenAndServe("0.0.0.0:8080", nil); err != nil {
 		slog.Error("Error starting server", "ERROR", err.Error())
 	}
 }

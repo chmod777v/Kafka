@@ -3,6 +3,7 @@ FROM golang:alpine
 WORKDIR /app
 
 COPY ./cmd/Consumer/main.go .
+COPY ./pkg ./pkg
 COPY go.sum .
 COPY go.mod .
 
@@ -10,5 +11,4 @@ RUN go mod download
 
 RUN go build -o main main.go
 RUN chmod +x main
-EXPOSE 8080
 CMD ["./main"]

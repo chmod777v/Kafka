@@ -1,10 +1,14 @@
 package main
 
 import (
+	"context"
 	"encoding/json"
 	"fmt"
+	"log"
 	"log/slog"
 	"net/http"
+
+	"github.com/segmentio/kafka-go"
 )
 
 type Hash struct {
@@ -23,10 +27,23 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 }
 
 func main() {
-	http.HandleFunc("/", Handler)
-	fmt.Println("server start: '0.0.0.0:8080'")
+	writer := kafka.NewWriter(kafka.WriterConfig{
+		Brokers: []string{"localhost:9095"},
+		Topic:   "my-topic",
+	})
+	defer writer.Close()
 
-	if err := http.ListenAndServe("0.0.0.0:8080", nil); err != nil {
+	err := writer.WriteMessages(context.Background(), kafka.Message{
+		Value: []byte("Hello, Kafka!"),
+	})
+
+	if err != nil {
+		log.Fatal("Ошибка при отправке:", err)
+	}
+
+	http.HandleFunc("/", Handler)
+	fmt.Println("server start: 'localhost:8080'")
+	if err := http.ListenAndServe("localhost:8080", nil); err != nil {
 		slog.Error("Error starting server", "ERROR", err.Error())
 	}
 }

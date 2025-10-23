@@ -1,10 +1,14 @@
 package main
 
 import (
+	"context"
 	"crypto/sha1"
 	"crypto/sha256"
 	"crypto/sha512"
 	"fmt"
+	"log"
+
+	"github.com/segmentio/kafka-go"
 )
 
 func HachFunc(hashfunc int, value []byte) ([]byte, error) {
@@ -27,6 +31,20 @@ func HachFunc(hashfunc int, value []byte) ([]byte, error) {
 }
 
 func main() {
+	reader := kafka.NewReader(kafka.ReaderConfig{
+		Brokers: []string{"localhost:9095"},
+		Topic:   "my-topic",
+		GroupID: "my-groupID",
+	})
+	defer reader.Close()
+
+	fmt.Println("Read")
+	msg, err := reader.ReadMessage(context.Background())
+	if err != nil {
+		log.Fatal("Ошибка при получении:", err)
+	}
+	fmt.Println(string(msg.Value))
+
 	value, err := HachFunc(2, []byte("hellow"))
 	if err != nil {
 		fmt.Println(err.Error())

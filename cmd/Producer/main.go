@@ -1,10 +1,9 @@
 package main
 
 import (
-	"context"
 	"encoding/json"
 	"fmt"
-	"log"
+	my_kafka "kafka/pkg/kafka"
 	"log/slog"
 	"net/http"
 
@@ -15,8 +14,11 @@ type Hash struct {
 	HachFunc int
 	Value    any
 }
+type Handler struct {
+	writer *kafka.Writer
+}
 
-func Handler(w http.ResponseWriter, r *http.Request) {
+func (h *Handler) Handler(w http.ResponseWriter, r *http.Request) {
 	var req Hash
 	if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
 		w.WriteHeader(http.StatusInternalServerError)
@@ -24,24 +26,19 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	slog.Info("RequestGet", "Data", req)
+	value, _ := json.Marshal(req)
+	slog.Info("Send kafka1")
+	my_kafka.Write(h.writer, value)
+	slog.Info("Send kafka2")
 }
 
 func main() {
-	writer := kafka.NewWriter(kafka.WriterConfig{
-		Brokers: []string{"localhost:9095"},
-		Topic:   "my-topic",
-	})
+	writer := my_kafka.NewWriter()
 	defer writer.Close()
 
-	err := writer.WriteMessages(context.Background(), kafka.Message{
-		Value: []byte("Hello, Kafka!"),
-	})
+	handler := Handler{writer: writer}
+	http.HandleFunc("/", handler.Handler)
 
-	if err != nil {
-		log.Fatal("Ошибка при отправке:", err)
-	}
-
-	http.HandleFunc("/", Handler)
 	fmt.Println("server start: 'localhost:8080'")
 	if err := http.ListenAndServe("localhost:8080", nil); err != nil {
 		slog.Error("Error starting server", "ERROR", err.Error())

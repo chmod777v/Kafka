@@ -1,0 +1,13 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ .Release.Name }}-producer-service
+spec:
+  selector:
+    app: {{ .Release.Name }}-producer
+  ports:
+    - name: {{ .Release.Name }}-producer
+      protocol: TCP
+      port: {{ .Values.producer.container.portPod}}
+      targetPort: {{ .Values.producer.container.portIn}}
+  type: NodePort

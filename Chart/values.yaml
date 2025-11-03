@@ -1,0 +1,6 @@
+consumer:
+  container:
+    image: kafka-consumer
+    portPod: 8090 #порт поды
+    portIn: 8080 #порт сервиса внутри поды
+  replicaCount: 3

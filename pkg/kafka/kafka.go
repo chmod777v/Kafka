@@ -48,7 +48,7 @@ func Write(writer *kafka.Writer, value []byte) error {
 }
 func NewWriter() *kafka.Writer {
 	writer := kafka.NewWriter(kafka.WriterConfig{
-		Brokers: []string{"kafka:9092"},
+		Brokers: []string{"localhost:9095"},
 		Topic:   "my-topic",
 
 		RequiredAcks: 1,                      //0: at most once; 1: At least once; -1: At least once, но с дополнительными подтверждениями (по умолчанию), самые надежные гарантии, сообщения подтверждаются всеми репликами
@@ -66,7 +66,7 @@ func NewWriter() *kafka.Writer {
 
 func NewReader() *kafka.Reader {
 	reader := kafka.NewReader(kafka.ReaderConfig{
-		Brokers: []string{"kafka:9092"},
+		Brokers: []string{"localhost:9095"},
 		Topic:   "my-topic",
 		GroupID: "my-groupID", //позволяет объединять консьюмеров в группу для распределения партиций между ними.
 

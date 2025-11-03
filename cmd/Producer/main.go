@@ -33,8 +33,8 @@ func main() {
 	handler := Handler{writer: writer}
 	http.HandleFunc("/", handler.Handler)
 
-	fmt.Println("server start: '0.0.0.0:8080'")
-	if err := http.ListenAndServe("0.0.0.0:8080", nil); err != nil {
+	fmt.Println("server start: 'localhost:8080'")
+	if err := http.ListenAndServe("localhost:8080", nil); err != nil {
 		slog.Error("Error starting server", "ERROR", err.Error())
 	}
 }

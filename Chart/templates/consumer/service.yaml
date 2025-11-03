@@ -1,0 +1,13 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ .Release.Name }}-consumer-service
+spec:
+  selector:
+    app: {{ .Release.Name }}-consumer
+  ports:
+    - name: {{ .Release.Name }}-consumer
+      protocol: TCP
+      port: {{ .Values.consumer.container.portPod}}
+      targetPort: {{ .Values.consumer.container.portIn}}
+  type: ClusterIP

@@ -1,0 +1,20 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Release.Name }}-consumer
+spec:
+  replicas: {{ .Values.consumer.replicaCount }}
+  selector:
+    matchLabels:
+      app: {{ .Release.Name }}-consumer
+  template:
+    metadata:
+      labels:
+        app: {{ .Release.Name }}-consumer
+    spec:
+      containers:
+      - name: {{ .Release.Name }}-consumer
+        image: {{ .Values.consumer.container.image }}
+        imagePullPolicy: Never
+        ports:
+        - containerPort: {{ .Values.consumer.container.portPod }}

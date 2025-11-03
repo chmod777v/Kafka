@@ -1,0 +1,15 @@
+apiVersion: v2
+name       : my_kafka
+description: my test kafka setvice
+type       : application
+version    : 0.1.0
+appVersion : "1.0"
+
+keywords:
+  - kafka
+  - service
+
+maintainers:
+  - name : chmod
+    email: chmod@777v.net
+    url  : www.chmod.net/777v

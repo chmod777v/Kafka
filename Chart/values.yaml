@@ -3,11 +3,16 @@ consumer:
     image: kafka-consumer
     portPod: 8090 #порт поды
     portIn: 8080 #порт сервиса внутри поды
-  replicaCount: 3
+  replicaCount: 1
 
 producer:
-  replicaCount: 3
+  replicaCount: 1
   container:
     image: kafka-producer
     portPod: 8090 #порт поды
     portIn: 8080 #порт сервиса внутри поды
+
+ingress:
+  producer:
+    host: localhost
+    path: /

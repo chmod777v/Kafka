@@ -7,6 +7,9 @@ import (
 	"encoding/json"
 	"fmt"
 	my_kafka "kafka/pkg/kafka"
+	"log"
+	"log/slog"
+	"net/http"
 )
 
 var Base = make(map[string][]byte)
@@ -29,8 +32,7 @@ func HachFunc(hashfunc int, value []byte) ([]byte, error) {
 		return nil, fmt.Errorf("no hashfunc %d", hashfunc)
 	}
 }
-
-func main() {
+func KafkaReader() {
 	reader := my_kafka.NewReader()
 	defer reader.Close()
 	fmt.Println("server start")
@@ -56,8 +58,30 @@ func main() {
 			fmt.Println(err.Error())
 			continue
 		}
-		fmt.Println(hash)
 		Base[value.Name] = hash
+
+	}
+}
+
+func Handler(w http.ResponseWriter, r *http.Request) {
+	data, err := json.MarshalIndent(Base, "", " ")
+	if err != nil {
+		log.Fatal(err)
+	}
+	fmt.Println("--REQUEST--")
+	w.Write(data)
+}
+
+func main() {
+	go func() {
+		KafkaReader()
+	}()
+
+	http.HandleFunc("/", Handler)
+
+	fmt.Println("server start: '0.0.0.0:8090'")
+	if err := http.ListenAndServe("0.0.0.0:8090", nil); err != nil {
+		slog.Error("Error starting server", "ERROR", err.Error())
 	}
 
 }

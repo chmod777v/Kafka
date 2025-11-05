@@ -8,13 +8,21 @@ metadata:
 spec:
   ingressClassName: nginx
   rules:
-  - host: {{ .Values.ingress.producer.host }}
+  - host: {{ .Values.ingress.host }}
     http:
-        paths:
-        - path: {{ .Values.ingress.producer.path }}
-          pathType: Prefix
-          backend:
-            service:
-              name: {{ .Release.Name }}-producer-service
-              port:
-                number: {{ .Values.producer.container.portPod }}
+      paths:
+      - path: {{ .Values.ingress.producer.path }}
+        pathType: Prefix
+        backend:
+          service:
+            name: {{ .Release.Name }}-producer-service
+            port:
+              number: {{ .Values.producer.container.portPod }}
+
+      - path: {{ .Values.ingress.consumer.path }}
+        pathType: Prefix
+        backend:
+          service:
+            name: {{ .Release.Name }}-consumer-service
+            port:
+              number: {{ .Values.consumer.container.portPod }}

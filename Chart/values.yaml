@@ -1,18 +1,20 @@
+producer:
+  container:
+    image: kafka-producer
+    portPod: 8080 #порт поды
+    portIn: 8080 #порт сервиса внутри поды
+  replicaCount: 1
+
 consumer:
   container:
     image: kafka-consumer
-    portPod: 8090 #порт поды
-    portIn: 8080 #порт сервиса внутри поды
+    portPod: 8090 
+    portIn: 8090 
   replicaCount: 1
-
-producer:
-  replicaCount: 1
-  container:
-    image: kafka-producer
-    portPod: 8090 #порт поды
-    portIn: 8080 #порт сервиса внутри поды
 
 ingress:
+  host: localhost
   producer:
-    host: localhost
-    path: /
+    path: /post
+  consumer:
+    path: /get

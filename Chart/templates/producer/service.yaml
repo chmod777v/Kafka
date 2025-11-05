@@ -10,4 +10,4 @@ spec:
       protocol: TCP
       port: {{ .Values.producer.container.portPod}}
       targetPort: {{ .Values.producer.container.portIn}}
-  type: NodePort
+  type: ClusterIP

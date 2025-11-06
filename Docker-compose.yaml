@@ -6,17 +6,15 @@ services:
       - 9092:9092
       - 9095:9095
     environment:
-      KAFKA_PROCESS_ROLES: broker,controller
-      KAFKA_NODE_ID: 1
-      KAFKA_CONTROLLER_QUORUM_VOTERS: 1@kafka:9093
-      KAFKA_LISTENERS: PLAINTEXT://0.0.0.0:9092,CONTROLLER://0.0.0.0:9093,PLAINTEXT_HOST://0.0.0.0:9095
-      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka:9092,PLAINTEXT_HOST://localhost:9095
-      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: CONTROLLER:PLAINTEXT,PLAINTEXT:PLAINTEXT,PLAINTEXT_HOST:PLAINTEXT
+      KAFKA_PROCESS_ROLES: broker,controller                  #controller управляет метаданными кластера (топики, партиции, репликация); broker отвечает за хранение данных и обработку запросов клиентов
+      KAFKA_NODE_ID: 1                                        #Уникальный идентификатор ноды в кластере
+      KAFKA_CONTROLLER_QUORUM_VOTERS: 1@kafka:9093            #Список контроллеров для кворума; Формат: node_id@host:port
+      KAFKA_LISTENERS: INTERNAL://0.0.0.0:9092,CONTROLLER://0.0.0.0:9093,EXTERNAL://0.0.0.0:9095          #На каких интерфейсах и портах слушает Kafka; для клиентов внутри кластера; для общения между контроллерами; для клиентов снаружи кластера
+      KAFKA_ADVERTISED_LISTENERS: INTERNAL://kafka:9092,EXTERNAL://localhost:9095                         #какие адреса сообщаются клиентам; клиенты внутри кластера подключаются к kafka:9092; клиенты снаружи подключаются к localhost:9095
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: CONTROLLER:PLAINTEXT,INTERNAL:PLAINTEXT,EXTERNAL:PLAINTEXT    #Сопоставляет listener names с протоколами безопасности; PLAINTEXT - без шифрования и аутентификации
       
-      KAFKA_CONTROLLER_LISTENER_NAMES: CONTROLLER
-      KAFKA_INTER_BROKER_LISTENER_NAME: PLAINTEXT
-      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
-      KAFKA_AUTO_CREATE_TOPICS_ENABLE: "true"
+      KAFKA_CONTROLLER_LISTENER_NAMES: CONTROLLER     #Какой listener использовать для контроллера
+      KAFKA_INTER_BROKER_LISTENER_NAME: INTERNAL      #Какой listener использовать для общения между брокерами
 
   kafka-ui:
     image: provectuslabs/kafka-ui

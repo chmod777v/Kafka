@@ -12,6 +12,12 @@ consumer:
     portIn: 8090 
   replicaCount: 1
 
+kafka:
+  container:
+    image: confluentinc/cp-kafka
+    IpExternal: 192.168.1.74
+  replicaCount: 1 #только 1; для multi-node Kafka кластера нужен StatefulSet манифест а не Deployment (в prodaction StatefulSet)
+
 ingress:
   host: localhost
   producer:
